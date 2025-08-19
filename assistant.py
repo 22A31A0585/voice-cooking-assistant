@@ -2,12 +2,12 @@
 import streamlit as st
 import pyttsx3
 from PIL import Image
-import time
 
+# Initialize text-to-speech engine
 engine = pyttsx3.init()
 engine.setProperty('rate', 150)
 
-# Recipe steps with optional image for each step
+# Recipe steps with optional images
 recipe_steps = [
     {"text": "Welcome! Today we are making Masala Maggi.", "img": "images/welcome.png"},
     {"text": "Step 1: Boil one and a half cups of water.", "img": "images/step1.png"},
@@ -17,13 +17,16 @@ recipe_steps = [
     {"text": "Step 5: Serve hot and enjoy!", "img": "images/step5.png"}
 ]
 
+# Initialize current step in session state
 if "current_step" not in st.session_state:
     st.session_state.current_step = 0
 
+# Function to speak text
 def speak(text):
     engine.say(text)
     engine.runAndWait()
 
+# Display the current step with text and image
 def show_step():
     step = recipe_steps[st.session_state.current_step]
     st.markdown(f"<h3 style='color:#FF5733'>{step['text']}</h3>", unsafe_allow_html=True)
@@ -31,8 +34,9 @@ def show_step():
         img = Image.open(step['img'])
         st.image(img, use_column_width=True)
     except:
-        st.write("Image not found, continue with text.")
+        st.write("Image not found. Continue with text.")
 
+# Button functions
 def start_recipe():
     st.session_state.current_step = 0
     show_step()
@@ -59,9 +63,13 @@ def stop_recipe():
 st.title("🍜 Masala Maggi Cooking Assistant")
 st.markdown("<h5 style='color:blue'>Follow the recipe step by step!</h5>", unsafe_allow_html=True)
 
-# Animated GIF for fun
-st.image("images/cooking.gif", use_column_width=True)
+# Optional GIF animation at the top
+try:
+    st.image("images/cooking.gif", use_column_width=True)
+except:
+    st.write("No animation found, continue with text.")
 
+# Buttons layout
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
@@ -76,5 +84,3 @@ with col3:
 with col4:
     if st.button("Stop"):
         stop_recipe()
-
-  handle_command(command)
